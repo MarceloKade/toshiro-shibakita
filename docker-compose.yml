@@ -1,0 +1,43 @@
+version: "3.8"
+
+services:
+  nginx:
+    build: ./nginx
+    ports:
+      - "4500:4500"
+    depends_on:
+      - app1
+      - app2
+    networks:
+      - rede-interna
+
+  app1:
+    build: ./app
+    depends_on:
+      - db
+    networks:
+      - rede-interna
+
+  app2:
+    build: ./app
+    depends_on:
+      - db
+    networks:
+      - rede-interna
+
+  db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: Senha123
+      MYSQL_DATABASE: meubanco
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - rede-interna
+
+volumes:
+  db_data:
+
+networks:
+  rede-interna:
